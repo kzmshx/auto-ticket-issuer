@@ -34,10 +34,12 @@ const config = {
         new CopyPlugin({
             patterns: [{ from: path.join(__dirname, "src/appsscript.json") }],
         }),
-        new webpack.DefinePlugin({
-            GITHUB_TOKEN: JSON.stringify(process.env.GITHUB_TOKEN),
-            BACKLOG_API_KEY: JSON.stringify(process.env.BACKLOG_API_KEY),
-        }),
+        new webpack.EnvironmentPlugin([
+            "BACKLOG_API_KEY",
+            "GITHUB_TARGET_LABEL_NAME",
+            "GITHUB_TARGET_REPOSITORY_OWNER_ID",
+            "GITHUB_TOKEN",
+        ]),
     ],
 }
 
