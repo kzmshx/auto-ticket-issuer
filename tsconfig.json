@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2015"],
+    "target": "ES2015",
+    "allowJs": true,
+    "esModuleInterop": true
+  },
+  "ts-node": {
+    "files": true
+  }
+}
