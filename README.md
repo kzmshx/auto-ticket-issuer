@@ -4,49 +4,76 @@ Sample project creating a Backlog ticket when a GitHub Pull Request is opened.
 
 ## 開発方法
 
-### Clasp をグローバルインストールしてログイン
+### Clasp をセットアップ
 
 ```shell
 npm i -g @google/clasp
+```
 
+```shell
 clasp login
 ```
 
-### プロジェクトルートで依存パッケージをインストール
+### 依存パッケージをインストール
 
 ```shell
 npm i
 ```
 
-### スクリプトを作成
+### スクリプトをセットアップ
+
+Clasp でスクリプトを作成
 
 ```shell
-clasp create --type webapp --title "@kzmshx/auto-ticket-issuer" --rootDir "src"
+mkdir dist && clasp create \
+  --type webapp \
+  --title "@kzmshx/auto-ticket-issuer" \
+  --rootDir "dist"
 ```
 
-### `.clasp.json` をプロジェクトルートへ移動
+設定ファイルを移動
 
 ```shell
-mv src/.clasp.json .clasp.json
+mv dist/appsscript.json src/appsscript.json
+mv dist/.clasp.json .clasp.json
 ```
 
-### `appsscript.json` の `timezone` を変更
-
-```text
-{
-  "timeZone": "Asia/Tokyo",
-  ...
-}
-```
-
-### コードをプッシュ
+`appsscript.json` の `timeZone` を変更
 
 ```shell
-clasp push
+cat src/appsscript.json | jq '.timeZone |= "Asia/Tokyo"' | tee src/appsscript.json
 ```
 
-### ウェブアプリケーションとしてデプロイ
+### デプロイ（初回）
 
-### 更新された `appsscript.json` をローカルへダウンロード
+初回は以下のようにソースをビルドし、プッシュする。
 
-→ 環境構築終了
+```shell
+npm run build && npm run push
+```
+
+コンソールでソースがプッシュされていることを確認したら、以下の設定でウェブアプリケーションとしてデプロイする。
+`説明` を `current` にしてデプロイすると `npm run redeploy` がそのデプロイを対象に再デプロイを行えるようになる。
+
+- 説明
+    - `current`
+- 次のユーザーとして実行
+    - 自分
+- アクセスできるユーザー
+    - 全員
+
+![コンソールから新しいデプロイを作成](docs/images/deploy-appsscript-via-console.png)
+
+ウェブアプリケーションとしてデプロイすると `appsscript.json` に `webapp` フィールドが追加されるので、一度 `clasp pull` を実行する。
+
+```shell
+clasp pull && mv dist/appsscript.json src/appsscript.json
+```
+
+### デプロイ（2回目以降）
+
+一度コンソール上でウェブアプリケーションとしてデプロイすることで、次回以降の再デプロイはコマンドラインで行えるようになる。
+
+```shell
+npm run all
+```
