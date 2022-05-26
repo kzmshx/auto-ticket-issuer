@@ -4,7 +4,9 @@ Sample project creating a Backlog ticket when a GitHub Pull Request is opened.
 
 ## 開発方法
 
-### Clasp をセットアップ
+### 環境構築
+
+#### Clasp をセットアップ
 
 ```shell
 npm i -g @google/clasp
@@ -14,13 +16,13 @@ npm i -g @google/clasp
 clasp login
 ```
 
-### 依存パッケージをインストール
+#### 依存パッケージをインストール
 
 ```shell
 npm i
 ```
 
-### スクリプトをセットアップ
+#### スクリプトをセットアップ
 
 Clasp でスクリプトを作成
 
@@ -44,7 +46,7 @@ mv dist/.clasp.json .clasp.json
 cat src/appsscript.json | jq '.timeZone |= "Asia/Tokyo"' | tee src/appsscript.json
 ```
 
-### デプロイ（初回）
+#### デプロイ（初回）
 
 初回は以下のようにソースをビルドし、プッシュする。
 
@@ -70,10 +72,17 @@ npm run build && npm run push
 clasp pull && mv dist/appsscript.json src/appsscript.json
 ```
 
-### デプロイ（2回目以降）
+#### デプロイ（2回目以降）
 
 一度コンソール上でウェブアプリケーションとしてデプロイすることで、次回以降の再デプロイはコマンドラインで行えるようになる。
 
 ```shell
 npm run all
 ```
+
+### 環境変数（`.env`）の設定
+
+| 変数名              | 値                 | 備考                                   |
+|:-----------------|:------------------|:-------------------------------------|
+| GITHUB_TOKEN     | GitHub のアクセストークン  | Pull Request のタイトルやブランチを変更するために使われる  |
+| BACKLOG_API_KEY  | Backlog の API キー  | Backlog にチケットを新規追加するために使われる          |
