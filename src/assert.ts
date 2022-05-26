@@ -1,3 +1,10 @@
+export function assertIsDefined<T>(value: T | undefined): T {
+    if (value === undefined) {
+        throw new Error("value must be defined")
+    }
+    return value
+}
+
 export function assertIsString(value: any): string {
     if (typeof value === "string" || value instanceof String) {
         return value.toString()

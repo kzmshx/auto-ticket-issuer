@@ -2,13 +2,15 @@ const path = require("path")
 
 const CopyPlugin = require("copy-webpack-plugin")
 const dotenv = require("dotenv")
+const Dotenv = require("dotenv-webpack")
 const GasPlugin = require("gas-webpack-plugin")
 const webpack = require("webpack")
 
 dotenv.config()
 
 const config = {
-    mode: "production",
+    mode: "development",
+    devtool: "inline-source-map",
     entry: {
         main: path.join(__dirname, "src/main.ts"),
     },
@@ -34,12 +36,14 @@ const config = {
         new CopyPlugin({
             patterns: [{ from: path.join(__dirname, "src/appsscript.json") }],
         }),
-        new webpack.EnvironmentPlugin([
-            "BACKLOG_API_KEY",
-            "GITHUB_TARGET_LABEL_NAME",
-            "GITHUB_TARGET_REPOSITORY_OWNER_ID",
-            "GITHUB_TOKEN",
-        ]),
+        new Dotenv({
+            path: "./.env",
+            safe: false,
+            allowEmptyValues: false,
+            systemvars: false,
+            silent: false,
+            defaults: true,
+        }),
     ],
 }
 
