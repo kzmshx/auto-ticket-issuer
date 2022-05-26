@@ -27,7 +27,7 @@ npm i
 Clasp でスクリプトを作成
 
 ```shell
-mkdir dist && clasp create \
+mkdir -p dist && clasp create \
   --type webapp \
   --title "@kzmshx/auto-ticket-issuer" \
   --rootDir "dist"
