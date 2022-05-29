@@ -1,4 +1,4 @@
-import { buildUrl, QueryParams } from "../url"
+import { buildUrl, QueryParams } from "../lib/url"
 
 describe("buildUrl", () => {
     it("should be able to build URL without query params", () => {
