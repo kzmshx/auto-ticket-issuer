@@ -1,8 +1,15 @@
-export function assertIsDefined<T>(value: T | undefined): T {
+export function assertNotUndefined<T>(value: T | undefined): T {
     if (value === undefined) {
-        throw new Error("value must be defined")
+        throw new Error("value must not be undefined")
     }
     return value
+}
+
+export function assertIsNumber(value: any): number {
+    if (typeof value === "number" || value instanceof Number) {
+        return value.valueOf()
+    }
+    throw new Error("value must be string")
 }
 
 export function assertIsString(value: any): string {

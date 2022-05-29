@@ -30,7 +30,15 @@ export type Issue = {
     [x: string]: unknown
 }
 
-export type AddIssuePayload = {
+export type GetProjectParams = {
+    projectIdOrKey: string
+}
+
+export type GetIssueTypeListParams = {
+    projectIdOrKey: string
+}
+
+export type AddIssueParams = {
     projectId: number
     summary: string
     issueTypeId: number
@@ -44,33 +52,33 @@ function stringifyProps(data: { [key: string]: any }): { [key: string]: string }
 }
 
 export class Backlog {
-    constructor(private readonly baseUrl: string, private readonly apiKey: string) {}
+    public constructor(private readonly baseUrl: string, private readonly apiKey: string) {}
 
-    getPriorityList(): Priority[] {
+    public getPriorityList(): Priority[] {
         const response = UrlFetchApp.fetch(this.buildUrl("/api/v2/priorities"))
         return JSON.parse(response.getContentText())
     }
 
-    getProject(projectIdOrKey: string): Project {
-        const response = UrlFetchApp.fetch(this.buildUrl(`/api/v2/projects/${projectIdOrKey}`))
+    public getProject(params: GetProjectParams): Project {
+        const response = UrlFetchApp.fetch(this.buildUrl(`/api/v2/projects/${params.projectIdOrKey}`))
         return JSON.parse(response.getContentText())
     }
 
-    getIssueTypeList(projectIdOrKey: string): IssueType[] {
-        const response = UrlFetchApp.fetch(this.buildUrl(`/api/v2/projects/${projectIdOrKey}/issueTypes`))
+    public getIssueTypeList(params: GetIssueTypeListParams): IssueType[] {
+        const response = UrlFetchApp.fetch(this.buildUrl(`/api/v2/projects/${params.projectIdOrKey}/issueTypes`))
         return JSON.parse(response.getContentText())
     }
 
-    addIssue(payload: AddIssuePayload): Issue {
+    public addIssue(params: AddIssueParams): Issue {
         const response = UrlFetchApp.fetch(this.buildUrl(`/api/v2/issues`), {
             method: "post",
             contentType: "application/x-www-form-urlencoded",
-            payload: stringifyProps(payload),
+            payload: stringifyProps(params),
         })
         return JSON.parse(response.getContentText())
     }
 
-    buildUrl(path: string, queryParams?: QueryParams): string {
+    private buildUrl(path: string, queryParams?: QueryParams): string {
         return buildUrl(this.baseUrl, path, { apiKey: this.apiKey, ...queryParams })
     }
 }

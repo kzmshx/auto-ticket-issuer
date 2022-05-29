@@ -84,5 +84,5 @@ npm run all
 
 | 変数名              | 値                 | 備考                                   |
 |:-----------------|:------------------|:-------------------------------------|
-| GITHUB_TOKEN     | GitHub のアクセストークン  | Pull Request のタイトルやブランチを変更するために使われる  |
+| GITHUB_ACCESS_TOKEN     | GitHub のアクセストークン  | Pull Request のタイトルやブランチを変更するために使われる  |
 | BACKLOG_API_KEY  | Backlog の API キー  | Backlog にチケットを新規追加するために使われる          |
