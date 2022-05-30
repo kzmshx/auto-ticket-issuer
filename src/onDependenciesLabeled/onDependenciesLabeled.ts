@@ -2,10 +2,13 @@ import { assertIsNumber, assertIsString, assertNotUndefined, assertSame } from "
 import { Backlog, Issue } from "../lib/backlog"
 import { GitHub } from "../lib/github"
 import { buildUrl } from "../lib/url"
-import labeledEvent from "../testdata/labeled.json"
+import { Payload } from "../main"
 
-export function onDependenciesLabeled(payload: { [key: string]: any }): void {
-    if (!matchEvent(payload)) {
+import config from "./config.json"
+import labeledEvent from "./testdata/labeled.json"
+
+export function onDependenciesLabeled(payload: Payload): void {
+    if (!isTargetEvent(payload)) {
         return
     }
 
@@ -21,43 +24,43 @@ export function onDependenciesLabeled(payload: { [key: string]: any }): void {
     updatePullRequest(repoOwner, repoName, pullNumber, backlogIssue.issueKey, backlogIssue.summary)
 }
 
-export function matchEvent(payload: { [key: string]: any }): boolean {
-    const repoOwnerName = assertNotUndefined(process.env.GITHUB_PR_REPO_OWNER_NAME)
-    const labelName = assertNotUndefined(process.env.GITHUB_PR_LABEL_NAME)
-
+export function isTargetEvent(payload: Payload): boolean {
     try {
         assertSame("labeled", assertIsString(payload?.action))
-        assertSame(repoOwnerName, assertIsString(payload?.repository?.owner?.login))
-        assertSame(labelName, assertIsString(payload?.label?.name))
+        assertSame(config.githubTargetPullRepoOwner, assertIsString(payload?.repository?.owner?.login))
+        assertSame(config.githubTargetPullLabel, assertIsString(payload?.label?.name))
     } catch (e: unknown) {
         return false
     }
     return true
 }
 
-export function createBacklogIssue(prTitle: string, prUrl: string): Issue {
+export function createBacklogIssue(pullTitle: string, pullUrl: string): Issue {
     const baseUrl = assertNotUndefined(process.env.BACKLOG_BASE_URL)
     const apiKey = assertNotUndefined(process.env.BACKLOG_API_KEY)
-    const projectName = assertNotUndefined(process.env.BACKLOG_PROJECT_NAME)
-    const issueTypeName = assertNotUndefined(process.env.BACKLOG_ISSUE_TYPE_NAME)
-    const priorityName = assertNotUndefined(process.env.BACKLOG_PRIORITY_NAME)
-
     const client = new Backlog(baseUrl, apiKey)
-    const project = client.getProject({ projectIdOrKey: projectName })
-    const issueTypes = client.getIssueTypeList({ projectIdOrKey: projectName })
-    const priorities = client.getPriorityList()
 
-    const issueType = assertNotUndefined(issueTypes.filter((issueType) => issueType.name === issueTypeName).shift())
-    const priority = assertNotUndefined(priorities.filter((priority) => priority.name === priorityName).shift())
+    const project = client.getProject({ projectIdOrKey: config.backlogProject })
+    const issueType = assertNotUndefined(
+        client
+            .getIssueTypeList({ projectIdOrKey: config.backlogProject })
+            .filter((issueType) => issueType.name === config.backlogIssueType)
+            .shift()
+    )
+    const priority = assertNotUndefined(
+        client
+            .getPriorityList()
+            .filter((priority) => priority.name === config.backlogPriority)
+            .shift()
+    )
 
     const issue = client.addIssue({
         projectId: project.id,
         issueTypeId: issueType.id,
         priorityId: priority.id,
-        summary: prTitle,
-        description: prUrl,
+        summary: pullTitle,
+        description: pullUrl,
     })
-
     console.info("issue added", { issueKey: issue.issueKey, summary: issue.summary })
 
     return issue
@@ -80,7 +83,6 @@ export function updatePullRequest(
         pull_number: pullNumber,
         title: `${backlogIssueKey} ${backlogIssueSummary}`,
     })
-
     console.info("pull request updated", { url: pullRequest.html_url, title: pullRequest.title })
 
     const issueComment = client.createIssueComment({
@@ -89,7 +91,6 @@ export function updatePullRequest(
         issue_number: pullNumber,
         body: buildUrl(backlogBaseUrl, `/view/${backlogIssueKey}`),
     })
-
     console.info("review comment created", { url: issueComment.html_url, body: issueComment.body })
 }
 

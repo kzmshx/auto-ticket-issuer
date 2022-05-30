@@ -1,7 +1,9 @@
-import { onDependenciesLabeled } from "./handler/onDependenciesLabeled"
+import { onDependenciesLabeled } from "./onDependenciesLabeled/onDependenciesLabeled"
+
+export type Payload = { [key: string]: any }
 
 global.doPost = (e: GoogleAppsScript.Events.DoPost): GoogleAppsScript.Content.TextOutput => {
-    const payload: { [x: string]: any } = JSON.parse(e.postData.contents)
+    const payload: Payload = JSON.parse(e.postData.contents)
 
     onDependenciesLabeled(payload)
 

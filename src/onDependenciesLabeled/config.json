@@ -1,0 +1,7 @@
+{
+  "backlogIssueType": "タスク",
+  "backlogPriority": "中",
+  "backlogProject": "LINANIT",
+  "githubTargetPullLabel": "dependencies",
+  "githubTargetPullRepoOwner": "kzmshx"
+}
