@@ -4,7 +4,6 @@ const CopyPlugin = require("copy-webpack-plugin")
 const dotenv = require("dotenv")
 const Dotenv = require("dotenv-webpack")
 const GasPlugin = require("gas-webpack-plugin")
-const webpack = require("webpack")
 
 dotenv.config()
 
