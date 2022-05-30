@@ -82,7 +82,14 @@ npm run all
 
 ### 環境変数（`.env`）の設定
 
-| 変数名              | 値                 | 備考                                   |
-|:-----------------|:------------------|:-------------------------------------|
-| GITHUB_ACCESS_TOKEN     | GitHub のアクセストークン  | Pull Request のタイトルやブランチを変更するために使われる  |
-| BACKLOG_API_KEY  | Backlog の API キー  | Backlog にチケットを新規追加するために使われる          |
+| 変数名                 | 値                       | 備考                         |
+|:--------------------|:------------------------|:---------------------------|
+| BACKLOG_API_KEY     | Backlog の API キー        | Backlog API にアクセスするための認証情報 |
+| BACKLOG_BASE_URL    | Backlog のワークスペースのベースURL |                            |
+| GITHUB_ACCESS_TOKEN | GitHub のアクセストークン        | GitHub API にアクセスするための認証情報  |
+
+`.env.defaults` を `.env` （.gitignore に含まれる）にコピーし、上記の項目を記載する
+
+```shell
+cp .env.defaults .env
+```
