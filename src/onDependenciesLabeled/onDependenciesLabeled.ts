@@ -1,4 +1,4 @@
-import { assertIsNumber, assertIsString, assertNotUndefined, assertSame } from "../lib/assert"
+import { assertIsNumber, assertIsString, assertNotUndefined } from "../lib/assert"
 import { Backlog, Issue } from "../lib/backlog"
 import { GitHub } from "../lib/github"
 import { buildUrl } from "../lib/url"
@@ -25,14 +25,11 @@ export function onDependenciesLabeled(payload: Payload): void {
 }
 
 export function isTargetEvent(payload: Payload): boolean {
-    try {
-        assertSame("labeled", assertIsString(payload?.action))
-        assertSame(config.githubTargetPullRepoOwner, assertIsString(payload?.repository?.owner?.login))
-        assertSame(config.githubTargetPullLabel, assertIsString(payload?.label?.name))
-    } catch (e: unknown) {
-        return false
-    }
-    return true
+    return (
+        payload?.action === "labeled" &&
+        payload?.repository?.owner?.login === config.githubTargetPullRepoOwner &&
+        payload?.label?.name === config.githubTargetPullLabel
+    )
 }
 
 export function createBacklogIssue(pullTitle: string, pullUrl: string): Issue {
